@@ -47,9 +47,6 @@ git submodule update
 - The packer image has been created without a monitoring. 
 - MySQL is using the same disk for the data than for the OS. The volume is created with deletion on the termination of the instance.
 - Kubernetes cluster uses many default configurations
-- Wordpress App has been installed using Helm Chart and many configurations are used by default, like storage.
-- The Pipeline has not been developed as by the architecture chosen has not much sense. As the changes performed direcctly to the HelmRelease and pushed would be applied directly to the EKS Cluster.
-- The Wordpress App cannot auto scale to different availability zones (3 pods with the current resource requirements) due to a conflict in persistent volume claims and their availability zones. The persistent Volume is created only for one availability zone, and I have decided not to invest time to solve this issue for the demo purposes.
 
 ## Commands
 

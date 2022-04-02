@@ -1,4 +1,9 @@
-# Univerisity Chicago - Devops Course
+# The Univerisity of Chicago - Devops Course
+
+## Introduction
+
+This repository has been created as part of the contents for the [Devops Course](https://online.professional.uchicago.edu/course/dtb-dev/) at the [The Univerisity of Chicago](https://online.professional.uchicago.edu/) as an Teacher Assistant.
+
 
 ## Assigment
 
@@ -11,7 +16,15 @@ Our company wants to create a marketing campaign to promote the his services. Fo
 - Test that the solution will be scalable and resilient to the increase of load.
 - Use an infrastructure as code approach so the whole project can be redeployed through different environments and quickly.
 
-## Technical description
+## Important
+
+<img src='https://toppng.com/uploads/preview/warning-vectors-and-icons-warning-svg-icon-11553508662kccnngsukp.png' width='16'>
+The execution of the scripts contained in this repository create resources on AWS that are not on the free-tier, so before executing it be aware that you will be charge for them. 
+
+Be sure that you review that all reasources have been deleted after the removal of the Stack, as there are some resources that are not deleted automatically after deleting the Cloudformation stack. Like for example: Loadbalancer, EFS FileSystem, Security Groups.
+
+
+## Repositories layout
 
 * The project is divided in 4 different repositories
   * **[uchicago-cdk](https://github.com/ausias-armesto/uchicago-cdk)**: This repository holds the CloudFormation code to create the infrastructure.

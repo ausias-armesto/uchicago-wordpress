@@ -42,7 +42,7 @@ Be sure that you review that all reasources have been deleted after the removal 
 - Installed kubeseal v0.17.2
 - Installed yq v4.24.2
 
-# Usage of this repository
+## Usage of this repository
 
 To be able to use this repository, you need to fork it, instead of clonning
 ```

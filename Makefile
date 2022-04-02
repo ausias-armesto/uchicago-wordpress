@@ -4,6 +4,7 @@ check:
 	cdk --version && \
 	packer --version && \
 	flux --version && \
+	yq --version && \
 	kubeseal --version && \
 	kubectl > /dev/null
 

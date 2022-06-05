@@ -1,7 +1,6 @@
 
 check:
 	aws sts get-caller-identity && \
-	cdk --version && \
 	packer --version && \
 	flux --version && \
 	yq --version && \
@@ -70,9 +69,9 @@ load-test-stop:
 	kubectl delete deployment -n wordpress load-test	
 	
 enable-access-grafana: 
-	kubectl -n monitoring port-forward svc/kube-prometheus-stack-grafana 3000:80 2>&1 /dev/null &
+	kubectl -n monitoring port-forward svc/kube-prometheus-stack-grafana 3000:80
 
 enable-access-wordpress: 	
-	kubectl -n wordpress port-forward svc/wordpress 4000:80 2>&1 /dev/null &
+	kubectl -n wordpress port-forward svc/wordpress 4000:80
 
 all: check clean create-secrets deploy-network create-ami deploy-infrastructure flux

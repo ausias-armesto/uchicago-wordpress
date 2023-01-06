@@ -5,7 +5,9 @@ check:
 	flux --version && \
 	yq --version && \
 	kubeseal --version && \
-	kubectl > /dev/null
+	kubectl > /dev/null && \
+	gpg --version
+
 
 prepare:
 	cd uchicago-cdk && \

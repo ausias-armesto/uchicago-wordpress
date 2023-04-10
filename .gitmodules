@@ -1,9 +1,0 @@
-[submodule "uchicago-cdk"]
-	path = uchicago-cdk
-	url = https://github.com/ausias-armesto/uchicago-cdk.git
-[submodule "uchicago-packer"]
-	path = uchicago-packer
-	url = https://github.com/ausias-armesto/uchicago-packer.git
-[submodule "uchicago-gitops"]
-	path = uchicago-gitops
-	url = https://github.com/ausias-armesto/uchicago-gitops.git

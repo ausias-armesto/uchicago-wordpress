@@ -27,11 +27,15 @@ deploy-network:
 	npx cdk deploy --require-approval never --context stackName=network --context environmentName=$(env) --context region=$(region)
 
 
-AMI_ID := $(shell aws ec2 describe-images --filters Name=tag:Type,Values=uchicago-mysql --output text --query "Images[0].ImageId")
-SNAPSHOT_ID_OS := $(shell aws ec2 describe-images --filters Name=tag:Type,Values=uchicago-mysql  --output text --query "Images[0].BlockDeviceMappings[?(@.DeviceName == '/dev/xvda')].Ebs.SnapshotId")
-MYSQL_ROOT_PASSWORD := $(shell aws secretsmanager get-secret-value --secret-id root-mysql-uchicago-$(env) --query SecretString --output text | jq -r ".password")
+VAR_AMI_ID = $(eval AMI_ID=$(shell aws ec2 describe-images --filters Name=tag:Type,Values=uchicago-mysql --output text --query "Images[0].ImageId"))
+VAR_SNAPSHOT_ID_OS = $(eval SNAPSHOT_ID_OS=$(shell aws ec2 describe-images --filters Name=tag:Type,Values=uchicago-mysql  --output text --query "Images[0].BlockDeviceMappings[?(@.DeviceName == '/dev/xvda')].Ebs.SnapshotId"))
+VAR_MYSQL_ROOT_PASSWORD := $(eval MYSQL_ROOT_PASSWORD=$(shell aws secretsmanager get-secret-value --secret-id root-mysql-uchicago-$(env) --query SecretString --output text | jq -r ".password"))
+
         
 create-ami:
+	$(VAR_AMI_ID)
+	$(VAR_SNAPSHOT_ID_OS)
+	$(VAR_MYSQL_ROOT_PASSWORD)
 	if [ "$(AMI_ID)" != "None" ]; then aws ec2 deregister-image --image-id=$(AMI_ID); aws ec2 delete-snapshot --snapshot-id=$(SNAPSHOT_ID_OS); fi
 	cd uchicago-packer && \
 	packer build -var 'region=$(region)' -var 'environmentName=$(env)' -var 'mysqlRootPassword=$(MYSQL_ROOT_PASSWORD)' packer.json
@@ -51,7 +55,7 @@ deploy-infrastructure:
 	cd uchicago-cdk && \
 	npx cdk deploy --require-approval never --all --context stackName=infrastructure --context environmentName=$(env) --context region=$(region) --no-rollback
 
-KUBECTL_UPDATE_COMMAND := $(shell aws cloudformation describe-stacks --stack-name wordpress-k8s-$(env) --output json  | jq .Stacks[0].Outputs | grep 'aws eks update-kubeconfig' | sed 's/.*"aws/aws/' | sed 's/"$\//')
+# KUBECTL_UPDATE_COMMAND := $(shell aws cloudformation describe-stacks --stack-name wordpress-k8s-$(env) --output json  | jq .Stacks[0].Outputs | grep 'aws eks update-kubeconfig' | sed 's/.*"aws/aws/' | sed 's/"$\//')
 configure-kubernetes:
 	cd uchicago-cdk && \
 	npm run kubernetes:config && \

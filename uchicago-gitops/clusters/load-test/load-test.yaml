@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: load-test
+  namespace: wordpress
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: infinite-calls
+  template:
+    metadata:
+      name: load-test
+      labels:
+        app: infinite-calls
+    spec:
+      containers:
+      - name: load-test
+        image: busybox
+        command:
+        - /bin/sh
+        - -c
+        - "while true; do wget -q -O- http://wordpress.wordpress.svc.cluster.local; done"

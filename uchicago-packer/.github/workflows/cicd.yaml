@@ -1,0 +1,50 @@
+name: Continuous Integration
+on:
+  push:
+    branches:
+      - develop
+      - master  
+jobs:     
+  packer-mysql:
+    runs-on: ubuntu-latest 
+    steps: 
+    - name: Checkout GIT repository
+      uses: actions/checkout@v2
+    - name: Identifying Branch
+      run: |
+          echo "Building on branch ${{ github.ref }}"
+          if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then echo "AWS_REGION=eu-west-1" >> $GITHUB_ENV; echo "ENVIRONMENT_NAME=dev" >> $GITHUB_ENV; fi
+          if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then echo "AWS_REGION=eu-west-2" >> $GITHUB_ENV; echo "ENVIRONMENT_NAME=pre" >> $GITHUB_ENV; fi           
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    - name: Remove previous AMI
+      run: |        
+        AMI_ID=`aws ec2 describe-images --filters Name=tag:Type,Values=uchicago-mysql --output text --query "Images[0].ImageId"`
+        if [ $AMI_ID != "None" ]; then
+          echo "Removing previous image"
+          SNAPSHOT_ID_OS=`aws ec2 describe-images --filters Name=tag:Type,Values=uchicago-mysql  --output text --query "Images[0].BlockDeviceMappings[?(@.DeviceName == '/dev/xvda')].Ebs.SnapshotId"`
+          aws ec2 deregister-image --image-id=$AMI_ID
+          aws ec2 delete-snapshot --snapshot-id=$SNAPSHOT_ID_OS
+        fi
+    - name: Get Mysql Root password
+      run: |
+        MYSQL_ROOT_PASSWORD=`aws secretsmanager get-secret-value --secret-id root-mysql-uchicago-${{ env.ENVIRONMENT_NAME }} --query SecretString --output text | jq -r ".password"`
+        echo "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" >> $GITHUB_ENV;
+    - name: Build AMI
+      uses: hashicorp/packer-github-actions@master
+      with:
+        command: build
+        arguments: "--var environmentName=${{ env.ENVIRONMENT_NAME }} --var mysqlRootPassword=${{ env.MYSQL_ROOT_PASSWORD }} --var region=${{ env.AWS_REGION }}"
+        target: packer.json
+    - name: Tag resources
+      run: |
+        AMI_ID=$(jq -r '.builds[-1].artifact_id' manifest.json | cut -d ":" -f2)
+        AMI_NAME=`aws ec2 describe-images --image-ids $AMI_ID --output text --query "Images[0].Name"`
+        SNAPSHOT_ID_OS=`aws ec2 describe-images --image-ids $AMI_ID --output text --query "Images[0].BlockDeviceMappings[?(@.DeviceName == '/dev/xvda')].Ebs.SnapshotId"`
+        aws ec2 create-tags --resources $SNAPSHOT_ID_OS --tags Key=Name,Value=$AMI_NAME
+        aws ec2 create-tags --resources $SNAPSHOT_ID_OS --tags Key=Type,Value=ami-uchicago-mysql
+

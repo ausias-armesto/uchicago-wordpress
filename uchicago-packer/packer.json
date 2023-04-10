@@ -1,0 +1,69 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "environmentName": "dev",
+    "region": "{{env `AWS_REGION`}}"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "vpc_filter": {
+        "filters": {
+          "tag:Name": "vpc-{{user `environmentName`}}",
+          "isDefault": "false"
+        }
+      },
+      "subnet_filter": {
+        "filters": {
+          "tag:Name": "wordpress-vpc-{{user `environmentName`}}/VPC/Public-Subnet1"
+        },
+        "most_free": true,
+        "random": false
+      },
+      "region": "{{user `AWS_REGION`}}",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "architecture": "x86_64",
+          "name": "*amzn2-ami-hvm-2.0*-x86_64-gp2",
+          "root-device-type": "ebs"
+        },
+        "owners": [
+          "137112412989"
+        ],
+        "most_recent": true
+      },
+      "source_ami": "{{user `ami`}}",
+      "instance_type": "t2.small",
+      "ssh_username": "ec2-user",
+      "ami_name": "uchicago-mysql-{{timestamp}}",
+      "run_tags": {
+        "Name": "packer-build-mysql"
+      },
+      "tags": {
+        "Name": "wordpress-mysql-db",
+        "Type": "uchicago-mysql"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "{{ .Vars }} sudo -E /bin/bash '{{ .Path }}'",
+      "environment_vars": [
+        "MYSQL_ROOT_PASSWORD={{user `mysqlRootPassword`}}"
+      ],
+      "scripts": [
+        "install_mysql.sh"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "manifest.json",
+      "strip_path": true
+    }
+  ]
+}

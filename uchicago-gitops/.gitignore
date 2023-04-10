@@ -1,0 +1,4 @@
+clusters/k8s-dev/wordpress/wordpress-admin-secret.yaml
+clusters/k8s-dev/wordpress/mysql-database-secret.yaml
+clusters/k8s-dev/security/sealed-secret-private-key.yaml
+clusters/k8s-dev/security/.vault_pass

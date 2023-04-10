@@ -1,0 +1,76 @@
+{
+  "region": "eu-west-1",
+  "environmentName": "dev",
+  "mysqlInstanceType": "t3.medium",
+  "clusterInstanceType": "t3.medium",
+  "clusterMinCapacity": 2,
+  "clusterMaxCapacity": 6,
+  "clusterDesiredCapacity": 2,
+  "clusterCpuUtilization": 20,
+  "clusterCoolDownMinutes": 2,
+  "availability-zones:account=196190545564:region=eu-west-1": [
+    "eu-west-1a",
+    "eu-west-1b",
+    "eu-west-1c"
+  ],
+  "vpc-provider:account=196190545564:filter.tag:Name=vpc-dev:region=eu-west-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-0c7f07e9ecd82aaa9",
+    "vpcCidrBlock": "10.0.0.0/16",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Private-",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-0a1e9133f3ffdd312",
+            "cidr": "10.0.0.0/24",
+            "availabilityZone": "eu-west-1a",
+            "routeTableId": "rtb-01af61538cda65771"
+          },
+          {
+            "subnetId": "subnet-0c94e7f449f7446bf",
+            "cidr": "10.0.1.0/24",
+            "availabilityZone": "eu-west-1b",
+            "routeTableId": "rtb-02eda22464ce3dba4"
+          },
+          {
+            "subnetId": "subnet-011f1cc1978f900d4",
+            "cidr": "10.0.2.0/24",
+            "availabilityZone": "eu-west-1c",
+            "routeTableId": "rtb-0b9b4b726c00445dd"
+          }
+        ]
+      },
+      {
+        "name": "Public-",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-0d9d130b52bb5573b",
+            "cidr": "10.0.3.0/24",
+            "availabilityZone": "eu-west-1a",
+            "routeTableId": "rtb-07784afff954ecc8e"
+          },
+          {
+            "subnetId": "subnet-099af3f58883515a5",
+            "cidr": "10.0.4.0/24",
+            "availabilityZone": "eu-west-1b",
+            "routeTableId": "rtb-0752af1d6b273d399"
+          },
+          {
+            "subnetId": "subnet-08c5afbd5ff18be0d",
+            "cidr": "10.0.5.0/24",
+            "availabilityZone": "eu-west-1c",
+            "routeTableId": "rtb-0d44514fd0b1b126d"
+          }
+        ]
+      }
+    ]
+  },
+  "ami:account=196190545564:filters.image-type.0=machine:filters.name.0=uchicago-mysql-*:filters.state.0=available:filters.tag:Name.0=wordpress-mysql-db:region=eu-west-1": "ami-0b61f1c626d6a9bc7",
+  "hosted-zone:account=196190545564:domainName=dev.wordpress.uchicago.local:privateZone=true:region=eu-west-1:vpcId=vpc-0c7f07e9ecd82aaa9": {
+    "Id": "/hostedzone/Z0964471EH8DHE5E4QU3",
+    "Name": "dev.wordpress.uchicago.local."
+  }
+}

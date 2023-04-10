@@ -12,7 +12,6 @@ spec:
   secretRef:
     name: flux-system
   url: ssh://git@github.com/ausias-armesto/uchicago-wordpress
-  path: ./uchicago-gitops
   ignore: |
     ./uchicago-cdk
     ./uchicago-packer

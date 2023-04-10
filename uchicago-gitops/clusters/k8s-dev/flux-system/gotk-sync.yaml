@@ -23,7 +23,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./clusters/k8s-dev
+  path: ./uchicago-gitops/clusters/k8s-dev
   prune: true
   sourceRef:
     kind: GitRepository

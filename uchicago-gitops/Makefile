@@ -49,12 +49,14 @@ VAR_EFS_ID = $(eval EFS_ID=$(shell aws efs describe-file-systems --query "FileSy
 
 update-efs:
 	$(VAR_EFS_ID)
+	git pull
 	yq -i '.spec.csi.volumeHandle="$(EFS_ID)"' ./clusters/k8s-$(env)/wordpress/wordpress-pv.yaml && \
-	git commit -m "Updating EFS ID" ./clusters/k8s-$(env)/wordpress/wordpress-pv.yaml && \
+	git commit -m "Updating EFS ID" ./clusters/k8s-$(env)/wordpress/wordpress-pv.yaml | true && \
 	git push
 
 flux-uninstall:
 	flux uninstall && \
 	kubectl delete namespace monitoring && \
+	kubectl delete namespace jenkins && \
 	kubectl delete namespace wordpress && \
 	kubectl delete deployment -n kube-system metrics-server

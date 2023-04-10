@@ -1,6 +1,6 @@
 flux-install:
 	flux check --pre && \
-	flux bootstrap github --owner=`git config user.name` --repository=uchicago-gitops --branch=master --path=./clusters/k8s-$(env) --personal
+	flux bootstrap github --owner=`git config user.name` --repository=uchicago-wordpress --branch=master --path=./uchicago-gitops/clusters/k8s-$(env) --personal
 
 create-master-sealed-secret:
 	cd ./clusters/k8s-$(env)/security/ && \

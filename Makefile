@@ -65,6 +65,7 @@ flux:
 	cd ./uchicago-gitops && \
 	make update-efs && \
 	make flux-install && \
+	sleep 60 \
 	make refresh-secrets
 
 load-test-start:

@@ -78,6 +78,15 @@ git submodule update
 * `make load-test-stop`: Stops injecting load into the wordpress App
 
 
+````
+flux get all -A
+flux suspend helmrelease wordpress -n wordpress
+flux resume helmrelease -n wordpress wordpress
+kubectl delete ns wordpress
+flux install helmrelease wordpress -n wordpress
+flux reconcile helmrelease wordpress -n wordpress
+````
+
 ## Access to Grafana:
 
 - url: http://localhost:3000

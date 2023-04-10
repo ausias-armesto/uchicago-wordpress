@@ -45,8 +45,11 @@ restart-wordpress:
 
 refresh-secrets: regenerate-master-sealed-secret create-mysql-secret create-wordpress-secret restart-wordpress
 
+VAR_EFS_ID = $(eval EFS_ID=$(shell aws efs describe-file-systems --query "FileSystems[0].FileSystemId" --output text))
+
 update-efs:
-	efs_id=`aws efs describe-file-systems --query "FileSystems[0].FileSystemId" --output text` yq -i '.spec.csi.volumeHandle = env(efs_id)' ./clusters/k8s-$(env)/wordpress/wordpress-pv.yaml && \
+	$(VAR_EFS_ID)
+	yq -i '.spec.csi.volumeHandle="$(EFS_ID)"' ./clusters/k8s-$(env)/wordpress/wordpress-pv.yaml && \
 	git commit -m "Updating EFS ID" ./clusters/k8s-$(env)/wordpress/wordpress-pv.yaml && \
 	git push
 

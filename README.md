@@ -87,6 +87,15 @@ flux install helmrelease wordpress -n wordpress
 flux reconcile helmrelease wordpress -n wordpress
 ````
 
+Delete Namespace
+````
+NAMESPACE=flux-system
+kubectl proxy &
+kubectl get namespace $NAMESPACE -o json |jq '.spec = {"finalizers":[]}' >temp.json
+curl -k -H "Content-Type: application/json" -X PUT --data-binary @temp.json 127.0.0.1:8001/api/v1/namespaces/$NAMESPACE/finalize
+
+````
+
 ## Access to Grafana:
 
 - url: http://localhost:3000

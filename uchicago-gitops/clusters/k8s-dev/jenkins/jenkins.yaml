@@ -20,8 +20,8 @@ spec:
   chart:
     spec:
       chart: jenkins
-      # version: 10.2.2
-      version: 10.2.7
+      # version: 10.2.3
+      version: 10.2.2
       #version: 12.0.4
       sourceRef:
         kind: HelmRepository

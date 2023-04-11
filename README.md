@@ -80,8 +80,8 @@ git submodule update
 
 ````
 flux get all -A
-flux suspend helmrelease wordpress -n wordpress
-flux resume helmrelease -n wordpress wordpress
+flux suspend helmrelease wordpress -n wordpress && flux resume helmrelease -n wordpress wordpress
+flux resume helmrelease -n jenkins jenkins && flux reconcile helmrelease -n jenkins jenkins
 kubectl delete ns wordpress
 flux install helmrelease wordpress -n wordpress
 flux reconcile helmrelease wordpress -n wordpress
